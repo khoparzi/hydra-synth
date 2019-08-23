@@ -1075,5 +1075,49 @@ float _noise(vec3 v){
       c = fract(c);
       return vec4(c, c0.a);
     }`
+  },
+  polar2: {
+    type: 'coord',
+    inputs: [
+      {
+        name: 'amount',
+        type: 'float',
+        default: 0.0
+      }
+    ],
+    glsl: `vec2 polar2(vec2 _st, float amount) {
+      vec2 relativePos = gl_FragCoord.xy - (resolution.xy / 2.);
+      vec2 polar;
+      // Radius from center
+      polar.y = sqrt(pow(relativePos.x, 2.) + pow(relativePos.y, 2.));
+      polar.y /= resolution.x / 2.;
+      polar.y = 1. - polar.y;
+
+      polar.x = atan(relativePos.y, relativePos.x);
+
+      polar.x -= 1.57079632679;
+      if(polar.x < 0.0){
+          polar.x += 6.28318530718;
+      }
+      polar.x /= 6.28318530718;
+      polar.x = 1.0 - polar.x;
+      return polar;
+    }`
+  },
+  polar: {
+    type: 'coord',
+    inputs: [
+      {
+        name: 'amount',
+        type: 'float',
+        default: 0.0
+      }
+    ],
+    glsl: `vec2 polar(vec2 st, float amount) {
+      st -= 0.5;
+      float r = length(st) - amount;
+      float a = atan(st.y, st.x);
+      return r * vec2(cos(a), sin(r));
+    }`
   }
 }
